@@ -1,86 +1,53 @@
 package co.feip.fefu2025
 
-
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.TextView
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import co.feip.fefu2025.ui.theme.FEFU2025AndroidBaseRepoTheme
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.util.Log
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
-    private var counter: Int = 0
-    private val internetReceiver = InternetReceiver()
+import java.math.RoundingMode
+import kotlin.random.Random
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var flexBoxLayout: CustomFlexBoxLayout
+    private lateinit var addButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity)
-        val textView: TextView = findViewById(R.id.textView)
-        val counterTextView: TextView = findViewById(R.id.counterTextView)
-        textView.setOnClickListener {
-            counter++
-            counterTextView.text = counter.toString()
-        }
+        setContentView(R.layout.main_activity)
 
-        ContextCompat.registerReceiver(
-            this,
-            internetReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
-            ContextCompat.RECEIVER_EXPORTED
+        flexBoxLayout = findViewById(R.id.flexBoxLayout)
+        addButton = findViewById(R.id.addButton)
+
+        addButton.setOnClickListener {
+            addLanguageView()
+        }
+    }
+
+    private fun addLanguageView() {
+        val randomLanguage = getRandomLanguage()
+
+        val languageView = LanguageView(this)
+
+        val randomColor = Color.argb(
+            255,
+            Random.nextInt(256),
+            Random.nextInt(256),
+            Random.nextInt(256)
         )
+
+        val randomPercentage = (Random.nextFloat() * 100).toBigDecimal().setScale(1, RoundingMode.HALF_UP).toFloat()
+
+        languageView.setLanguageName(randomLanguage)
+        languageView.setPercentage(randomPercentage)
+        languageView.setCircleColor(randomColor)
+
+        flexBoxLayout.addView(languageView)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(internetReceiver)
-    }
-
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt("count", counter)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        counter = savedInstanceState.getInt("count")
-        findViewById<TextView>(R.id.counterTextView).text = "$counter"
+    private fun getRandomLanguage(): String {
+        val languages = Constants.languages
+        return languages.random()
     }
 }
-
-class InternetReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent) {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork
-        val capabilities = connectivityManager.getNetworkCapabilities(network)
-        val isConnected = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
-
-        if (isConnected) {
-            Log.d("InternetReceiver", "Интернет доступен")
-        } else {
-            Log.d("InternetReceiver", "Интернет НЕ доступен")
-        }
-
-
-    }
-}
-
