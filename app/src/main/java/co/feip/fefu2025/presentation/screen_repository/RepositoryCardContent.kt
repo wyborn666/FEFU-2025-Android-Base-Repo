@@ -1,5 +1,3 @@
-package co.feip.fefu2025.presentation.screen_repository
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +39,7 @@ fun RepositoryCardContent(card: RepositoryCard) {
                 Text(
                     text = card.username,
                     fontFamily = FontFamily.Monospace,
-                    color = Color(card.languages.random().color), // just pick one color randomly
+                    color = Color(card.languages.random().color),
                     modifier = Modifier.padding(top = 3.dp),
                 )
             }
