@@ -1,16 +1,17 @@
 package co.feip.fefu2025
 
+import RepositoryListScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import co.feip.fefu2025.data.RepositoryImpl
+import co.feip.fefu2025.data.repository.RepositoryCardImpl
+import co.feip.fefu2025.presentation.screen_repository.RepositoryListViewModel
+import co.feip.fefu2025.domain.use_cases.GetRepositoriesUseCase
+import co.feip.fefu2025.domain.use_cases.GetRepositoryCardUseCase
+import co.feip.fefu2025.presentation.screen_repository.RepositoryCardScreen
+import co.feip.fefu2025.presentation.screen_repository.RepositoryViewModel
 import co.feip.fefu2025.ui.theme.FEFU2025AndroidBaseRepoTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +20,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FEFU2025AndroidBaseRepoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "FEIP",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                val repository = RepositoryCardImpl()
+                val useCase = GetRepositoryCardUseCase(repository)
+                val viewModel = RepositoryViewModel(useCase)
+
+                RepositoryCardScreen(viewModel = viewModel)
+
+//                val repository = RepositotyImpl()
+//                val useCase = GetRepositoiesUseCase(repository)
+//                val viewModel = RepositoryListViewModel(useCase)
+
+//                RepositoryListScreen(viewModel = viewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FEFU2025AndroidBaseRepoTheme {
-        Greeting("Android")
     }
 }
