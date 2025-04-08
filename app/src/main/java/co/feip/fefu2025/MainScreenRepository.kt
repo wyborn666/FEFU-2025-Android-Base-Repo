@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-data class Repository(
+data class UIRepository(
     val username: String,
     val description: String,
     val stars: String,
@@ -33,16 +33,16 @@ data class Repository(
 @Composable
 fun MainScreenRepository() {
     val repositories = listOf(
-        Repository("wyborn666", "My repository", "120", "32", R.drawable.me),
-        Repository("AlexMarchu", "Teacher of the Pacific Design School", "3400", "320", R.drawable.icon_rep1),
-        Repository("sxmurxy0", "Minecraft cheats and puzzles", "2750", "450", R.drawable.icon_rep2),
-        Repository("mesenev", "developer and teacher from Vladivostok", "9999", "600", R.drawable.icon_rep3),
+        UIRepository("wyborn666", "My repository", "120", "32", R.drawable.me),
+        UIRepository("AlexMarchu", "Teacher of the Pacific Design School", "3400", "320", R.drawable.icon_rep1),
+        UIRepository("sxmurxy0", "Minecraft cheats and puzzles", "2750", "450", R.drawable.icon_rep2),
+        UIRepository("mesenev", "developer and teacher from Vladivostok", "9999", "600", R.drawable.icon_rep3),
     )
 
     val myStars = listOf(
-        Repository("AlexMarchu", "Teacher of the Pacific Design School", "3400", "320", R.drawable.icon_rep1),
-        Repository("sxmurxy0", "Minecraft cheats and puzzles", "2750", "450", R.drawable.icon_rep2),
-        Repository("mesenev", "developer and teacher from Vladivostok", "9999", "600", R.drawable.icon_rep3),
+        UIRepository("AlexMarchu", "Teacher of the Pacific Design School", "3400", "320", R.drawable.icon_rep1),
+        UIRepository("sxmurxy0", "Minecraft cheats and puzzles", "2750", "450", R.drawable.icon_rep2),
+        UIRepository("mesenev", "developer and teacher from Vladivostok", "9999", "600", R.drawable.icon_rep3),
     )
 
     Column {
@@ -83,7 +83,7 @@ fun MainScreenRepository() {
 
 
 @Composable
-fun RepositoryCard(repository: Repository) {
+fun RepositoryCard(repository: UIRepository) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
