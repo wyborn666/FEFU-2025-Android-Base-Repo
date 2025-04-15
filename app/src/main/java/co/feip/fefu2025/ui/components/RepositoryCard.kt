@@ -27,9 +27,9 @@ import co.feip.fefu2025.R
 import co.feip.fefu2025.domain.entities.Repository
 
 @Composable
-fun RepositoryCard(repository: Repository) {
+fun RepositoryCard(repository: Repository, modifier: Modifier = Modifier) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(180.dp)
             .padding(12.dp),
@@ -37,7 +37,7 @@ fun RepositoryCard(repository: Repository) {
 
         ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
@@ -46,11 +46,11 @@ fun RepositoryCard(repository: Repository) {
                 Image(
                     painter = painterResource(repository.iconResId),
                     contentDescription = "",
-                    modifier = Modifier
+                    modifier = modifier
                         .size(24.dp)
                         .padding(top = 3.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = modifier.width(8.dp))
                 Text(
                     text = repository.username,
                     fontFamily = FontFamily.Monospace,
@@ -63,17 +63,17 @@ fun RepositoryCard(repository: Repository) {
             Text(
                 text = repository.description,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = modifier.padding(top = 8.dp)
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = modifier.weight(1f))
 
             Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = R.drawable.star),
                         contentDescription = "Stars",
-                        modifier = Modifier.size(22.dp).padding(bottom = 3.dp)
+                        modifier = modifier.size(22.dp).padding(bottom = 3.dp)
                     )
                     Text(text = repository.stars, fontSize = 15.sp)
                 }
@@ -82,7 +82,7 @@ fun RepositoryCard(repository: Repository) {
                     Image(
                         painter = painterResource(id = R.drawable.fork),
                         contentDescription = "Forks",
-                        modifier = Modifier.size(22.dp)
+                        modifier = modifier.size(22.dp)
                     )
                     Text(text = repository.forks, fontSize = 15.sp)
                 }

@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,57 +18,70 @@ import co.feip.fefu2025.ui.components.LanguageDistributionBar
 import co.feip.fefu2025.ui.components.LanguageView
 import co.feip.fefu2025.ui.components.CustomFlexBoxLayout
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.viewinterop.AndroidView
 
 @Composable
-fun RepositoryCardContent(card: RepositoryCard) {
+fun RepositoryCardContent(card: RepositoryCard, modifier: Modifier = Modifier) {
+    Log.d("RepositoryCard", "Stars: ${card.stars}, Forks: ${card.forks}")
+
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(300.dp)
-            .padding(24.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(top = 75.dp),
         shape = RoundedCornerShape(8.dp),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Image(
-                    painter = painterResource(id = R.drawable.android),
-                    contentDescription = "",
-                    modifier = Modifier.size(24.dp).padding(top = 3.dp)
+                    painter = painterResource(id = card.iconResId),
+                    contentDescription = "User",
+                    modifier = Modifier.size(32.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = card.username,
                     fontFamily = FontFamily.Monospace,
-                    color = Color(card.languages.random().color),
-                    modifier = Modifier.padding(top = 3.dp),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = card.description,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "Languages:",
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
 
-            val languages = card.languages
-            val colors = languages.map { it.color }
-
-            LanguageDistributionBar(languages.map { it.name to it.percentage }, colors)
+            LanguageDistributionBar(
+                languages = card.languages.map { it.name to it.percentage },
+                colors = card.languages.map { it.color },
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             AndroidView(factory = { context ->
                 CustomFlexBoxLayout(context).apply {
-                    for (lang in languages) {
+                    for (lang in card.languages) {
                         val langView = LanguageView(context).apply {
                             setLanguageName(lang.name)
                             setCircleColor(lang.color)
@@ -83,35 +97,39 @@ fun RepositoryCardContent(card: RepositoryCard) {
             Text(
                 text = "Created on: ${card.createdDate}",
                 fontSize = 14.sp,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = R.drawable.star),
                         contentDescription = "Stars",
-                        modifier = Modifier.size(16.dp).padding(top = 4.dp),
+                        modifier = Modifier.size(20.dp)
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = card.stars,
-                        modifier = Modifier.padding(top = 4.dp),
-                        fontSize = 12.sp
+                        fontSize = 16.sp,
                     )
                 }
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = R.drawable.fork),
                         contentDescription = "Forks",
-                        modifier = Modifier.size(16.dp).padding(top = 4.dp)
+                        modifier = Modifier.size(20.dp)
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = card.forks,
-                        modifier = Modifier.padding(top = 4.dp),
-                        fontSize = 12.sp
+                        fontSize = 16.sp,
                     )
                 }
             }

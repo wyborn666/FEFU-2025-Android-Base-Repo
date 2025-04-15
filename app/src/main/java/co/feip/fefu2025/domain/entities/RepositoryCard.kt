@@ -6,5 +6,6 @@ data class RepositoryCard(
     val languages: List<Language>,
     val createdDate: String,
     val stars: String,
-    val forks: String
+    val forks: String,
+    val iconResId: Int
 )
