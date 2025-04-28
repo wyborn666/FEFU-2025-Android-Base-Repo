@@ -3,5 +3,5 @@ package co.feip.fefu2025.domain.repository
 import co.feip.fefu2025.domain.entities.RepositoryCard
 
 interface RepositoryCardRepository {
-    fun getRepositoryCard(): RepositoryCard
+    suspend fun getRepositoryCard(): RepositoryCard
 }

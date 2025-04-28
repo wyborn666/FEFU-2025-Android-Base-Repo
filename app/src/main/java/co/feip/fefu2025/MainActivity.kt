@@ -21,7 +21,6 @@ class MainActivity : ComponentActivity() {
         val repositoryCardUseCaseFactory: (String) -> GetRepositoryCardUseCase = { username ->
             GetRepositoryCardUseCase(RepositoryCardImpl(username))
         }
-
         val listViewModel = RepositoryListViewModel(repositoryUseCase)
 
         setContent {

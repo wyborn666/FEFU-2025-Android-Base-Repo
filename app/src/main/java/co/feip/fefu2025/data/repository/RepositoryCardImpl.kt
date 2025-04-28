@@ -8,8 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RepositoryCardImpl(private val username: String) : RepositoryCardRepository {
-
-    override fun getRepositoryCard(): RepositoryCard {
+    override suspend fun getRepositoryCard(): RepositoryCard {
         return when (username) {
             "wyborn666" -> RepositoryCard(
                 username = "wyborn666",

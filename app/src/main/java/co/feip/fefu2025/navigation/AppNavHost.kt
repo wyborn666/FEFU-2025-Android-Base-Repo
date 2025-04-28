@@ -7,9 +7,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
 import co.feip.fefu2025.presentation.screen_repository.RepositoryCardScreen
 import co.feip.fefu2025.presentation.screen_repository.RepositoryListViewModel
+import co.feip.fefu2025.presentation.screen_repository.RepositorySearchScreen
 import co.feip.fefu2025.presentation.screen_repository.RepositoryViewModel
 
 
@@ -29,18 +29,14 @@ fun AppNavHost(
                 onItemClick = { username ->
                     navController.navigate("detail/$username")
                 },
+                onSearchClick = {
+                    navController.navigate("search")
+                },
                 navController = navController
             )
         }
 
-        composable(
-            route = "detail/{username}",
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = "mysuperapp://repo/{username}"
-                }
-            )
-        ) { backStackEntry ->
+        composable("detail/{username}") { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username") ?: return@composable
             val viewModel = cardViewModelFactory(username)
             RepositoryCardScreen(viewModel = viewModel, navController = navController)
@@ -48,6 +44,12 @@ fun AppNavHost(
 
         composable("starred") {
             StarredRepositoriesScreen(
+                viewModel = listViewModel,
+                navController = navController
+            )
+        }
+        composable("search") {
+            RepositorySearchScreen(
                 viewModel = listViewModel,
                 navController = navController
             )

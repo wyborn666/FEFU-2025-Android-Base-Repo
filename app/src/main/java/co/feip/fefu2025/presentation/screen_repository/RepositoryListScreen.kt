@@ -1,42 +1,72 @@
-
 import androidx.compose.foundation.clickable
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import co.feip.fefu2025.presentation.screen_repository.RepositoryListViewModel
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import co.feip.fefu2025.presentation.screen_repository.RepositoryListViewModel
 import co.feip.fefu2025.ui.components.RepositoryCard
 import co.feip.fefu2025.ui.components.TopBarWithSearch
 
 @Composable
-fun RepositoryListScreen(viewModel: RepositoryListViewModel,
-                         onItemClick: (String) -> Unit, navController: NavHostController) {
-    val repositories by viewModel.repositories.collectAsState()
-    val starred by viewModel.starred.collectAsState()
+fun RepositoryListScreen(
+    viewModel: RepositoryListViewModel,
+    onItemClick: (String) -> Unit,
+    onSearchClick: () -> Unit,
+    navController: NavHostController
+) {
+    val repositories = viewModel.repositories.collectAsState().value
+    val starred = viewModel.starred.collectAsState().value
+    val isLoadingMain = viewModel.isLoadingMain.collectAsState().value
+    val errorMessageMain = viewModel.errorMessageMain.collectAsState().value
 
     Column {
-        TopBarWithSearch()
+        if (!isLoadingMain && errorMessageMain == null) {
+            TopBarWithSearch(onSearchClick = { navController.navigate("search") })
+        }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-        ) {
-            item {
+        if (isLoadingMain) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else if (errorMessageMain != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "$errorMessageMain")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = { viewModel.retryMainLoad() }) {
+                        Text("Повторить")
+                    }
+                }
+            }
+        } else {
+            Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
                 Text(
                     text = "My Stars",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-                        .clickable { navController.navigate("starred")}
+                        .clickable { navController.navigate("starred") }
                 )
 
                 LazyRow {
@@ -44,20 +74,21 @@ fun RepositoryListScreen(viewModel: RepositoryListViewModel,
                         RepositoryCard(repo, modifier = Modifier.clickable { onItemClick(repo.username) })
                     }
                 }
-            }
-            item {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = "All Projects",
                     fontSize = 18.sp,
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
                 )
-            }
 
-            items(repositories) { repo ->
-                RepositoryCard(repo, modifier = Modifier.clickable { onItemClick(repo.username) })
+                LazyColumn {
+                    items(repositories) { repo ->
+                        RepositoryCard(repo, modifier = Modifier.clickable { onItemClick(repo.username) })
+                    }
+                }
             }
         }
     }
 }
-
-

@@ -6,7 +6,7 @@ import co.feip.fefu2025.domain.entities.RepositoryCard
 class GetRepositoryCardUseCase(
     private val repository: RepositoryCardRepository
 ) {
-    operator fun invoke(): RepositoryCard {
+    suspend operator fun invoke(): RepositoryCard {
         return repository.getRepositoryCard()
     }
 }
