@@ -1,47 +1,55 @@
 package co.feip.fefu2025
 
+import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import co.feip.fefu2025.ui.theme.FEFU2025AndroidBaseRepoTheme
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+import java.math.RoundingMode
+import kotlin.random.Random
+
+class MainActivity : AppCompatActivity() {
+
+    private val flexBoxLayout: CustomFlexBoxLayout by lazy {
+        findViewById(R.id.flexBoxLayout)
+    }
+    private val addButton: Button by lazy {
+        findViewById(R.id.addButton)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FEFU2025AndroidBaseRepoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "FEIP",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.main_activity)
+
+        addButton.setOnClickListener {
+            addLanguageView()
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun addLanguageView() {
+        val randomLanguage = getRandomLanguage()
+        val randomColor = Color.argb(
+            255,
+            Random.nextInt(256),
+            Random.nextInt(256),
+            Random.nextInt(256)
+        )
+        val randomPercentage = (Random.nextFloat() * 100)
+            .toBigDecimal()
+            .setScale(1, RoundingMode.HALF_UP)
+            .toFloat()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FEFU2025AndroidBaseRepoTheme {
-        Greeting("Android")
+        flexBoxLayout.addView(
+            LanguageView(this).apply {
+                setLanguageName(randomLanguage)
+                setPercentage(randomPercentage)
+                setCircleColor(randomColor)
+            }
+        )
+    }
+
+
+    private fun getRandomLanguage(): String {
+        val languages = Constants.languages
+        return languages.random()
     }
 }
