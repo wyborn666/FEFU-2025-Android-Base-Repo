@@ -11,14 +11,14 @@ class LanguageView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
-    private val colorCircle: View
+    private val viewColorCircle: View
     private val languageName: TextView
     private val percentage: TextView
 
     init {
         inflate(context, R.layout.layout_language_view, this)
-        colorCircle = findViewById(R.id.colorCircle)
-        languageName = findViewById(R.id.languageName)
+        viewColorCircle = findViewById(R.id.viewColorCircle)
+        languageName = findViewById(R.id.tv_languageName)
         percentage = findViewById(R.id.percentage)
 
     }
@@ -30,6 +30,6 @@ class LanguageView @JvmOverloads constructor(
         percentage.text = "${value}%"
     }
     fun setCircleColor(color: Int) {
-        colorCircle.background.setTint(color)
+        viewColorCircle.background.setTint(color)
     }
 }

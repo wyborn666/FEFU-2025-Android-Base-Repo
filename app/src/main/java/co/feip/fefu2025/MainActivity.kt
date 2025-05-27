@@ -10,15 +10,15 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var flexBoxLayout: CustomFlexBoxLayout
-    private lateinit var addButton: Button
-
+    private val flexBoxLayout: CustomFlexBoxLayout by lazy {
+        findViewById(R.id.flexBoxLayout)
+    }
+    private val addButton: Button by lazy {
+        findViewById(R.id.addButton)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-
-        flexBoxLayout = findViewById(R.id.flexBoxLayout)
-        addButton = findViewById(R.id.addButton)
 
         addButton.setOnClickListener {
             addLanguageView()
@@ -27,24 +27,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun addLanguageView() {
         val randomLanguage = getRandomLanguage()
-
-        val languageView = LanguageView(this)
-
         val randomColor = Color.argb(
             255,
             Random.nextInt(256),
             Random.nextInt(256),
             Random.nextInt(256)
         )
+        val randomPercentage = (Random.nextFloat() * 100)
+            .toBigDecimal()
+            .setScale(1, RoundingMode.HALF_UP)
+            .toFloat()
 
-        val randomPercentage = (Random.nextFloat() * 100).toBigDecimal().setScale(1, RoundingMode.HALF_UP).toFloat()
-
-        languageView.setLanguageName(randomLanguage)
-        languageView.setPercentage(randomPercentage)
-        languageView.setCircleColor(randomColor)
-
-        flexBoxLayout.addView(languageView)
+        flexBoxLayout.addView(
+            LanguageView(this).apply {
+                setLanguageName(randomLanguage)
+                setPercentage(randomPercentage)
+                setCircleColor(randomColor)
+            }
+        )
     }
+
 
     private fun getRandomLanguage(): String {
         val languages = Constants.languages
