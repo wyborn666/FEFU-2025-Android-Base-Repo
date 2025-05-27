@@ -11,7 +11,8 @@ class CustomFlexBoxLayout @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyleAttr) {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        var maxWidth = 0
         var lineWidth = 0
         var totalHeight = 0
         var lineHeight = 0
@@ -26,6 +27,7 @@ class CustomFlexBoxLayout @JvmOverloads constructor(
                 totalHeight += lineHeight
                 lineHeight = 0
                 lineWidth = 0
+                maxWidth = maxOf(maxWidth, lineWidth)
             }
             lineWidth += childWidth
             lineHeight = maxOf(lineHeight, childHeight)
@@ -33,11 +35,15 @@ class CustomFlexBoxLayout @JvmOverloads constructor(
 
         }
         totalHeight += lineHeight
-        setMeasuredDimension(widthSize, totalHeight)
+        maxWidth = maxOf(maxWidth, lineWidth)
+        setMeasuredDimension(
+            resolveSize(maxWidth, widthMeasureSpec),
+            resolveSize(totalHeight, heightMeasureSpec)
+        )
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val width = r - l
+        val width = measuredWidth
         var x = 0
         var y = 0
         var lineHeight = 0

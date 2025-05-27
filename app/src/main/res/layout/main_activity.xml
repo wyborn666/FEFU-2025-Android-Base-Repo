@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="touch me"
-        android:background="@drawable/button_rounded">
+        android:background="@drawable/bg_button_rounded">
     </Button>
 
     <co.feip.fefu2025.CustomFlexBoxLayout

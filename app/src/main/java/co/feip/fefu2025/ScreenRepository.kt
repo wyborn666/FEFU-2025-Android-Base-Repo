@@ -1,8 +1,5 @@
 package co.feip.fefu2025
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,12 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.feip.fefu2025.ui.theme.FEFU2025AndroidBaseRepoTheme
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.viewinterop.AndroidView
-import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
 import java.math.RoundingMode
@@ -45,14 +39,7 @@ fun getFormattedDate(): String {
 @Composable
 fun ScreenRepository() {
     FEFU2025AndroidBaseRepoTheme {
-        var textColor by remember { mutableStateOf(getRandomColor()) }
 
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(150)
-                textColor = getRandomColor()
-            }
-        }
 
         Card(
             modifier = Modifier
@@ -74,7 +61,7 @@ fun ScreenRepository() {
                     Text(
                         text = "wyborn666",
                         fontFamily = FontFamily.Monospace,
-                        color = Color(textColor),
+                        color = Color.Black,
                         modifier = Modifier.padding(top = 3.dp),
                     )
                 }

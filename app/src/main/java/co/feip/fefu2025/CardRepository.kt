@@ -15,29 +15,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
-import kotlin.random.Random
 
-fun randomColor(): Color {
-    return Color(
-        red = Random.nextFloat(),
-        green = Random.nextFloat(),
-        blue = Random.nextFloat()
-    )
-}
+
 
 @Preview(showBackground = true)
 @Composable
-fun RepositoryCard() {
+fun CardRepository() {
     FEFU2025AndroidBaseRepoTheme {
-        var textColor by remember { mutableStateOf(randomColor()) }
 
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(150)
-                textColor = randomColor()
-            }
-        }
 
         Card(
             modifier = Modifier
@@ -58,7 +43,7 @@ fun RepositoryCard() {
                         text = "wyborn666",
                         modifier = Modifier.padding(top = 3.dp),
                         fontFamily = FontFamily.Monospace,
-                        color = textColor
+                        color = Color.Black
                     )
                 }
                 Text(
