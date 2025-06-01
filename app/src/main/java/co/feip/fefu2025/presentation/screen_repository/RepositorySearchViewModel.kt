@@ -1,6 +1,7 @@
 package co.feip.fefu2025.presentation.screen_repository
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import co.feip.fefu2025.domain.entities.Repository
 import co.feip.fefu2025.domain.use_cases.GetRepositoriesUseCase
@@ -8,35 +9,32 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class RepositoryListViewModel(
-    private val useCase: GetRepositoriesUseCase,
+class RepositorySearchViewModel(
+    private val useCase: GetRepositoriesUseCase
 ) : ViewModel() {
 
     private val _repositories = MutableStateFlow<List<Repository>>(emptyList())
-    val repositories: StateFlow<List<Repository>> get() = _repositories
-
-    private val _starred = MutableStateFlow<List<Repository>>(emptyList())
-    val starred: StateFlow<List<Repository>> get() = _starred
-
-    private val _isLoadingMain = MutableStateFlow(true)
-    val isLoadingMain: StateFlow<Boolean> get() = _isLoadingMain
-
-    private val _errorMessageMain = MutableStateFlow<String?>(null)
-    val errorMessageMain: StateFlow<String?> get() = _errorMessageMain
 
     private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
 
     private val _searchResults = MutableStateFlow<List<Repository>>(emptyList())
+    val searchResults: StateFlow<List<Repository>> = _searchResults
 
     private val _isSearching = MutableStateFlow(false)
+    val isSearching: StateFlow<Boolean> = _isSearching
 
     private val _errorEvent = MutableSharedFlow<String>()
-    val errorEvent = _errorEvent.asSharedFlow()
-
-    private var isFirstMainLoad = true
 
     init {
-        loadRepositories()
+        viewModelScope.launch {
+            try {
+                _repositories.value = useCase.getAll()
+            } catch (e: Exception) {
+                _errorEvent.emit(e.message ?: "Ошибка загрузки репозиториев")
+            }
+        }
+
         viewModelScope.launch {
             _searchQuery
                 .debounce(300)
@@ -55,9 +53,7 @@ class RepositoryListViewModel(
                         emit(filtered)
                     }
                 }
-                .catch { e ->
-                    _errorEvent.emit(e.message ?: "Неизвестная ошибка при поиске")
-                }
+                .catch { e -> _errorEvent.emit(e.message ?: "Ошибка поиска") }
                 .collect { results ->
                     _searchResults.value = results
                     _isSearching.value = false
@@ -65,28 +61,18 @@ class RepositoryListViewModel(
         }
     }
 
-
-    fun loadRepositories() {
-        viewModelScope.launch {
-            _isLoadingMain.value = true
-            _errorMessageMain.value = null
-
-            try {
-                if (isFirstMainLoad) {
-                    isFirstMainLoad = false
-                    throw Exception("Ошибка загрузки главного экрана")
-                }
-                _repositories.value = useCase.getAll()
-                _starred.value = useCase.getStarred()
-            } catch (e: Exception) {
-                _errorMessageMain.value = e.message
-            } finally {
-                _isLoadingMain.value = false
-            }
-        }
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
     }
-
-    fun retryMainLoad() {
-        loadRepositories()
+}
+class RepositorySearchViewModelFactory(
+    private val useCase: GetRepositoriesUseCase
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(RepositorySearchViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return RepositorySearchViewModel(useCase) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

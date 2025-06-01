@@ -1,3 +1,4 @@
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,14 +11,16 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import co.feip.fefu2025.presentation.screen_repository.RepositoryListViewModel
 import co.feip.fefu2025.ui.components.RepositoryCard
 import co.feip.fefu2025.ui.components.TopBarWithSearch
@@ -27,68 +30,99 @@ fun RepositoryListScreen(
     viewModel: RepositoryListViewModel,
     onItemClick: (String) -> Unit,
     onSearchClick: () -> Unit,
-    navController: NavHostController
+    onNavigateToStarred: () -> Unit
 ) {
     val repositories = viewModel.repositories.collectAsState().value
     val starred = viewModel.starred.collectAsState().value
     val isLoadingMain = viewModel.isLoadingMain.collectAsState().value
     val errorMessageMain = viewModel.errorMessageMain.collectAsState().value
 
-    Column {
-        if (!isLoadingMain && errorMessageMain == null) {
-            TopBarWithSearch(onSearchClick = { navController.navigate("search") })
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.errorEvent.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
+    }
 
-        if (isLoadingMain) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+    Scaffold(
+        topBar = {
+            if (!isLoadingMain && errorMessageMain == null) {
+                TopBarWithSearch(onSearchClick = onSearchClick)
             }
-        } else if (errorMessageMain != null) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "$errorMessageMain")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { viewModel.retryMainLoad() }) {
-                        Text("Повторить")
+        }
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            when {
+                isLoadingMain -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
-            }
-        } else {
-            Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-                Text(
-                    text = "My Stars",
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-                        .clickable { navController.navigate("starred") }
-                )
-
-                LazyRow {
-                    items(starred) { repo ->
-                        RepositoryCard(repo, modifier = Modifier.clickable { onItemClick(repo.username) })
+                errorMessageMain != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(text = errorMessageMain)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(onClick = { viewModel.retryMainLoad() }) {
+                                Text("Повторить")
+                            }
+                        }
                     }
                 }
+                else -> {
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                    ) {
+                        Text(
+                            text = "My Stars",
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                                .clickable { onNavigateToStarred() }
+                        )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                        LazyRow {
+                            items(starred) { repo ->
+                                RepositoryCard(
+                                    repo,
+                                    modifier = Modifier.clickable { onItemClick(repo.username) }
+                                )
+                            }
+                        }
 
-                Text(
-                    text = "All Projects",
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
-                )
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                LazyColumn {
-                    items(repositories) { repo ->
-                        RepositoryCard(repo, modifier = Modifier.clickable { onItemClick(repo.username) })
+                        Text(
+                            text = "All Projects",
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
+                        )
+
+                        LazyColumn {
+                            items(repositories) { repo ->
+                                RepositoryCard(
+                                    repo,
+                                    modifier = Modifier.clickable { onItemClick(repo.username) }
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
+
+

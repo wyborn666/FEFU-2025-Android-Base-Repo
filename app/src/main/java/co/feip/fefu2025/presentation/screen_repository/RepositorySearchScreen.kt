@@ -16,7 +16,7 @@ import co.feip.fefu2025.ui.components.RepositoryCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepositorySearchScreen(
-    viewModel: RepositoryListViewModel,
+    viewModel: RepositorySearchViewModel,
     navController: NavController
 ) {
     val searchResults = viewModel.searchResults.collectAsState().value

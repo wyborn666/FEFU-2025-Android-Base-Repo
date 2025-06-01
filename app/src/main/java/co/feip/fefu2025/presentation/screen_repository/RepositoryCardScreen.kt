@@ -12,11 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RepositoryCardScreen(viewModel: RepositoryViewModel, navController: NavController) {
+fun RepositoryCardScreen(viewModel: RepositoryViewModel, onBackClick: () -> Unit) {
     val repositoryCard by viewModel.repositoryCard.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
@@ -35,7 +34,7 @@ fun RepositoryCardScreen(viewModel: RepositoryViewModel, navController: NavContr
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = errorMessage ?: "Неизвестная ошибка")
+                    Text(text = requireNotNull(errorMessage))
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(onClick = { viewModel.retryLoad() }) {
                         Text("Повторить")
@@ -52,14 +51,14 @@ fun RepositoryCardScreen(viewModel: RepositoryViewModel, navController: NavContr
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(onClick = { onBackClick() }) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                         }
                     },
                     modifier = Modifier.align(Alignment.TopStart)
                 )
-
-                RepositoryCardContent(repositoryCard!!)
+                val repo = requireNotNull(repositoryCard)
+                RepositoryCardContent(repo)
             }
         }
     }
