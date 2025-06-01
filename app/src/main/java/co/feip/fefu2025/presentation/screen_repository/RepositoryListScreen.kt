@@ -12,13 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import co.feip.fefu2025.ui.components.RepositoryCard
 import co.feip.fefu2025.ui.components.TopBarWithSearch
 
 @Composable
 fun RepositoryListScreen(viewModel: RepositoryListViewModel,
-                         onItemClick: (String) -> Unit, navController: NavHostController) {
+                         onItemClick: (String) -> Unit, onNavigateToStarred: () -> Unit) {
     val repositories by viewModel.repositories.collectAsState()
     val starred by viewModel.starred.collectAsState()
 
@@ -36,7 +35,7 @@ fun RepositoryListScreen(viewModel: RepositoryListViewModel,
                     fontSize = 18.sp,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
-                        .clickable { navController.navigate("starred")}
+                        .clickable { onNavigateToStarred() }
                 )
 
                 LazyRow {

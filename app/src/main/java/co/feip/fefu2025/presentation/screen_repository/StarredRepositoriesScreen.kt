@@ -13,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import co.feip.fefu2025.presentation.screen_repository.RepositoryListViewModel
 import co.feip.fefu2025.ui.components.RepositoryCard
 
@@ -21,7 +20,8 @@ import co.feip.fefu2025.ui.components.RepositoryCard
 @Composable
 fun StarredRepositoriesScreen(
     viewModel: RepositoryListViewModel,
-    navController: NavController
+    onBackClick: () -> Unit,
+    onItemClick: (String) -> Unit
 ) {
     val starred by viewModel.starred.collectAsState()
 
@@ -32,7 +32,7 @@ fun StarredRepositoriesScreen(
                 colors = TopAppBarDefaults.topAppBarColors(),
                 navigationIcon = {
                     androidx.compose.material3.IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { onBackClick() }
                     ) {
                         androidx.compose.material3.Icon(
                             imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
@@ -55,7 +55,7 @@ fun StarredRepositoriesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .clickable { navController.navigate("detail/${repo.username}") }
+                        .clickable { onItemClick(repo.username) }
                 )
             }
         }

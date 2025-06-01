@@ -14,14 +14,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RepositoryCardScreen(viewModel: RepositoryViewModel, navController: NavController) {
+fun RepositoryCardScreen(viewModel: RepositoryViewModel, onBackClick: () -> Unit) {
     val repositoryCard by viewModel.repositoryCard.collectAsState()
 
     repositoryCard?.let { card ->
@@ -34,7 +33,7 @@ fun RepositoryCardScreen(viewModel: RepositoryViewModel, navController: NavContr
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { onBackClick() }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },

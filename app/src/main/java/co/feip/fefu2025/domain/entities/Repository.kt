@@ -5,5 +5,6 @@ data class Repository(
     val description: String,
     val stars: String,
     val forks: String,
-    val iconResId: Int
+    val iconResId: Int,
+    val repoId: String
 )

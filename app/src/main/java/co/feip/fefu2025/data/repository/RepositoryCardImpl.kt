@@ -7,11 +7,11 @@ import co.feip.fefu2025.domain.repository.RepositoryCardRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RepositoryCardImpl(private val username: String) : RepositoryCardRepository {
+class RepositoryCardImpl(private val repoId: String) : RepositoryCardRepository {
 
     override fun getRepositoryCard(): RepositoryCard {
-        return when (username) {
-            "wyborn666" -> RepositoryCard(
+        return when (repoId) {
+            "1" -> RepositoryCard(
                 username = "wyborn666",
                 description = "This is my repository for Android",
                 languages = listOf(
@@ -24,7 +24,7 @@ class RepositoryCardImpl(private val username: String) : RepositoryCardRepositor
                 forks = "32",
                 iconResId = R.drawable.me
             )
-            "AlexMarchu" -> RepositoryCard(
+            "2" -> RepositoryCard(
                 username = "AlexMarchu",
                 description = "Creative teacher of Pacific Design School",
                 languages = listOf(
@@ -36,7 +36,7 @@ class RepositoryCardImpl(private val username: String) : RepositoryCardRepositor
                 forks = "320",
                 iconResId = R.drawable.icon_rep1
             )
-            "sxmurxy0" -> RepositoryCard(
+            "3" -> RepositoryCard(
                 username = "sxmurxy0",
                 description = "Did you buy a horsepower shampoo?",
                 languages = listOf(
@@ -51,7 +51,7 @@ class RepositoryCardImpl(private val username: String) : RepositoryCardRepositor
                 iconResId = R.drawable.icon_rep2
 
             )
-            "mesenev" -> RepositoryCard(
+            "4" -> RepositoryCard(
                 username = "mesenev",
                 description = "I really like reflection and aesthetics.",
                 languages = listOf(
@@ -66,7 +66,7 @@ class RepositoryCardImpl(private val username: String) : RepositoryCardRepositor
             )
 
             else -> RepositoryCard(
-                username = username,
+                username = repoId,
                 description = "Default repo description",
                 languages = listOf(
                     Language("C++", 100f, android.graphics.Color.RED)

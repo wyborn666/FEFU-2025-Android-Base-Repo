@@ -29,27 +29,35 @@ fun AppNavHost(
                 onItemClick = { username ->
                     navController.navigate("detail/$username")
                 },
-                navController = navController
+                onNavigateToStarred = {
+                    navController.navigate("starred")
+                }
             )
         }
 
         composable(
-            route = "detail/{username}",
+            route = "detail/{repoId}",
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "mysuperapp://repo/{username}"
+                    uriPattern = "mysuperapp://repo/{repoId}"
                 }
             )
         ) { backStackEntry ->
-            val username = backStackEntry.arguments?.getString("username") ?: return@composable
-            val viewModel = cardViewModelFactory(username)
-            RepositoryCardScreen(viewModel = viewModel, navController = navController)
+            val repoId = backStackEntry.arguments?.getString("repoId") ?: return@composable
+            val viewModel = cardViewModelFactory(repoId)
+            RepositoryCardScreen(
+                viewModel = viewModel,
+                onBackClick = { navController.popBackStack() }
+            )
         }
 
         composable("starred") {
             StarredRepositoriesScreen(
                 viewModel = listViewModel,
-                navController = navController
+                onBackClick = { navController.popBackStack() },
+                onItemClick = {repoId ->
+                    navController.navigate("detail/$repoId")
+                }
             )
         }
     }
